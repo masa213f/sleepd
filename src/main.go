@@ -96,6 +96,6 @@ func main() {
 	}()
 	ret := <-done
 
-	logInfo(opt, "exit: %d", ret)
+	logInfo(opt, "exit (code: %d)", ret)
 	os.Exit(ret)
 }
