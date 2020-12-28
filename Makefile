@@ -1,4 +1,4 @@
-VERSION ?= 0.0.0-devel
+VERSION ?= 0.1.0-devel
 
 IMAGE_PREFIX ?= masa213f/
 IMAGE_TAG ?= $(VERSION)
