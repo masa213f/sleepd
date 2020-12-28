@@ -26,5 +26,11 @@ So it has some useful features for testing.
 sleepd is uploadted to Docker Hub. So just run the following command to use it.
 
 ```console
-$  docker run masa213f/sleepd
+$ docker run masa213f/sleepd
+```
+
+If you want to use sleepd on kubernetes, execute the following command.
+
+```console
+$ kubectl apply -f https://raw.githubusercontent.com/masa213f/sleepd/main/example/deployment.yaml
 ```

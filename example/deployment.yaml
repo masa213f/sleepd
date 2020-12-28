@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sleepd
+  labels:
+    app.kubernetes.io/name: sleepd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sleepd
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sleepd
+    spec:
+      containers:
+      - name: sleepd
+        image: masa213f/sleepd
