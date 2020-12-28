@@ -27,11 +27,11 @@ test: lint
 image:
 	$(MAKE) build VERSION=$(VERSION) OUTPUT_DIR=./image
 	cp LICENSE ./image
-	docker build -t $(IMAGE_PREFIX)sleepd:devel image
+	docker build -t sleepd:devel image
 
 .PHONY: tag
 tag:
-	docker tag $(IMAGE_PREFIX)sleepd:devel $(IMAGE_PREFIX)sleepd:$(IMAGE_TAG)
+	docker tag sleepd:devel $(IMAGE_PREFIX)sleepd:$(IMAGE_TAG)
 
 .PHONY: push
 push:

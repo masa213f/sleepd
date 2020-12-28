@@ -1,0 +1,43 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Validate version number
+        id: check_version
+        run: |
+          VERSION=$(echo $GITHUB_REF | sed -ne 's/[^0-9]*\([0-9]\+\.[0-9]\+\.[0-9]\+\(-.*\)\?\).*/\1/p')
+          # Exit if invalid version format
+          if [ -z $VERSION ]; then exit 1; fi
+          # Check prerelease (whether it contains a hyphen or not)
+          if [[ $VERSION =~ .+-.+ ]]; then PRERELEASE=true; else PRERELEASE=false; fi
+          echo "::set-output name=version::${VERSION}"
+          echo "::set-output name=prerelease::${PRERELEASE}"
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.13
+      - run: make setup test build
+      - run: make image VERSION=${{ steps.check_version.outputs.version }}
+      - run: make tag push IMAGE_PREFIX=masa213f/ IMAGE_TAG=${{ steps.check_version.outputs.version }}
+      - run: make tag push IMAGE_PREFIX=masa213f/ IMAGE_TAG=latest
+        if: ${{ steps.check_version.outputs.prerelease == 'false' }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release v${{ steps.check_version.outputs.version  }}
+          draft: true
+          prerelease: ${{ steps.check_version.outputs.prerelease }}
