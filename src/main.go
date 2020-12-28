@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const version = "0.1.0"
+var Version string
 
 func log(format string, a ...interface{}) {
 	fmt.Println(time.Now().Format(time.RFC3339) + " " + fmt.Sprintf(format, a...))
@@ -37,7 +37,7 @@ func main() {
 		os.Exit(0)
 	}
 	if opt.showVersion {
-		fmt.Printf("sleepd %s\n", version)
+		fmt.Printf("sleepd %s\n", Version)
 		os.Exit(0)
 	}
 
