@@ -17,7 +17,11 @@ fmt:
 .PHONY: lint
 lint:
 	test -z "$$(goimports -l $$(find . -type f -name '*.go' -print) | tee /dev/stderr)"
+	staticcheck ./...
 	go vet ./...
+
+.PHONY: test
+test: lint
 
 .PHONY: image
 image:
