@@ -28,8 +28,8 @@ jobs:
           go-version: 1.13
       - run: make setup test build
       - run: make image VERSION=${{ steps.check_version.outputs.version }}
-      - run: make tag push IMAGE_PREFIX=masa213f/ IMAGE_TAG=${{ steps.check_version.outputs.version }}
-      - run: make tag push IMAGE_PREFIX=masa213f/ IMAGE_TAG=latest
+      - run: make tag push IMAGE_TAG=${{ steps.check_version.outputs.version }}
+      - run: make tag push IMAGE_TAG=latest
         if: ${{ steps.check_version.outputs.prerelease == 'false' }}
       - name: Create Release
         id: create_release

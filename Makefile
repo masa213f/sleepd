@@ -1,7 +1,8 @@
-OUTPUT_DIR ?= $(CURDIR)
+VERSION ?= 0.0.0-devel
 
-VERSION ?= devel
+IMAGE_PREFIX ?= masa213f/
 IMAGE_TAG ?= $(VERSION)
+OUTPUT_DIR ?= $(CURDIR)
 
 .PHONY: all
 all: build
