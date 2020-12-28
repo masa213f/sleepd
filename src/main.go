@@ -19,8 +19,8 @@ func logInfo(opt *option, format string, a ...interface{}) {
 	}
 }
 
-func logError(opt *option, format string, a ...interface{}) {
-	if !opt.silent || opt.showError {
+func logSignal(opt *option, format string, a ...interface{}) {
+	if !opt.silent || opt.showSignal {
 		log(format, a...)
 	}
 }
@@ -70,9 +70,9 @@ func main() {
 			case sig := <-sigCh:
 				sigNum := getSignalNumber(sig)
 				if ignoreSignal[sigNum] {
-					logError(opt, "catch signal: %d (ignored)", sigNum)
+					logSignal(opt, "catch signal: %d (ignored)", sigNum)
 				} else {
-					logError(opt, "catch signal: %d", sigNum)
+					logSignal(opt, "catch signal: %d", sigNum)
 					done <- sigNum
 				}
 			case <-ticker.C:
