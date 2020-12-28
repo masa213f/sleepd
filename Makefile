@@ -8,7 +8,7 @@ all: build
 
 .PHONY: build
 build:
-	CGO_ENABLED=0 go build  -ldflags "-X main.Version=$(VERSION)" -o $(OUTPUT_DIR)/sleepd ./src/...
+	CGO_ENABLED=0 go build -o $(OUTPUT_DIR)/sleepd -trimpath -ldflags "-s -w -X main.Version=$(VERSION)" ./src/...
 
 .PHONY: fmt
 fmt:
