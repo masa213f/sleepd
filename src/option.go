@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -15,6 +16,9 @@ Usage:
 Pause for NUMBER seconds.
 
 Options:
+  -ignore-signals, -i
+      Ignored signals. It should be a comma-separated list of signal numbers.
+
   -show-signal, -S
       When used with -silent, -s, it makes sleepd show an message if it catches signal.
 
@@ -32,11 +36,12 @@ GitHub repository URL: https://github.com/masa213f/sleepd
 `
 
 type option struct {
-	waitTime    int
-	silent      bool
-	showSignal  bool
-	showVersion bool
-	showHelp    bool
+	waitTime      int
+	ignoreSignals []int
+	silent        bool
+	showSignal    bool
+	showVersion   bool
+	showHelp      bool
 }
 
 func setFlagBoolBar(flags *flag.FlagSet, p *bool, defaultValue bool, name ...string) {
@@ -45,10 +50,18 @@ func setFlagBoolBar(flags *flag.FlagSet, p *bool, defaultValue bool, name ...str
 	}
 }
 
+func setFlagStringBar(flags *flag.FlagSet, p *string, defaultValue string, name ...string) {
+	for _, n := range name {
+		flags.StringVar(p, n, defaultValue, "")
+	}
+}
+
 func parseOptions(args []string) (*option, error) {
 	opt := new(option)
+	var rawIgnoreSignals string
 
 	var flags = flag.NewFlagSet("", flag.ContinueOnError)
+	setFlagStringBar(flags, &rawIgnoreSignals, "", "ignore-signals", "i")
 	setFlagBoolBar(flags, &opt.silent, false, "silent", "s")
 	setFlagBoolBar(flags, &opt.showSignal, false, "show-signal", "S")
 	setFlagBoolBar(flags, &opt.showVersion, false, "version", "v")
@@ -57,6 +70,18 @@ func parseOptions(args []string) (*option, error) {
 	err := flags.Parse(args)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(rawIgnoreSignals) > 0 {
+		split := strings.Split(rawIgnoreSignals, ",")
+		for _, s := range split {
+			sigNum, err := strconv.Atoi(s)
+			if err != nil {
+				return nil, fmt.Errorf("cannot to recognize signal number: %s", s)
+			}
+			opt.ignoreSignals = append(opt.ignoreSignals, sigNum)
+		}
+		sort.Ints(opt.ignoreSignals)
 	}
 
 	if flags.NArg() > 1 {

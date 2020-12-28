@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -49,7 +51,9 @@ func main() {
 	signal.Notify(sigCh, signals...)
 
 	ignoreSignal := map[int]bool{}
-	ignoreSignal[20] = true
+	for _, sig := range opt.ignoreSignals {
+		ignoreSignal[sig] = true
+	}
 
 	timer := time.NewTimer(time.Duration(opt.waitTime) * time.Second)
 	if opt.waitTime <= 0 {
@@ -61,7 +65,15 @@ func main() {
 		ticker.Stop()
 	}
 
-	logInfo(opt, "start")
+	if len(opt.ignoreSignals) == 0 {
+		logInfo(opt, "start (catch all signals)")
+	} else {
+		var sigs []string
+		for _, s := range opt.ignoreSignals {
+			sigs = append(sigs, strconv.Itoa(s))
+		}
+		logInfo(opt, "start (ignore: %s)", strings.Join(sigs, ", "))
+	}
 
 	done := make(chan int, 1)
 	go func() {
