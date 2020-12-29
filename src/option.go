@@ -16,6 +16,10 @@ Usage:
 Pause for NUMBER seconds.
 
 Options:
+  -exit-code [NUMBER], -e [NUMBER]
+      Exit code at the end of sleepd.
+      Even if this option is set, exit with the signal number when a signal is received.
+
   -ignore-signals, -i
       Ignored signals. It should be a comma-separated list of signal numbers.
 
@@ -40,6 +44,7 @@ GitHub repository URL: https://github.com/masa213f/sleepd
 
 type option struct {
 	waitTime      int
+	exitCode      int
 	ignoreSignals []int
 	logInterval   int
 	silent        bool
@@ -62,10 +67,12 @@ func setFlagStringBar(flags *flag.FlagSet, p *string, defaultValue string, name 
 
 func parseOptions(args []string) (*option, error) {
 	opt := new(option)
+	var rawExitCode string
 	var rawIgnoreSignals string
 	var rawLogInterval string
 
 	var flags = flag.NewFlagSet("", flag.ContinueOnError)
+	setFlagStringBar(flags, &rawExitCode, "0", "exit-code", "e")
 	setFlagStringBar(flags, &rawIgnoreSignals, "", "ignore-signals", "i")
 	setFlagStringBar(flags, &rawLogInterval, "10", "log-interval", "interval")
 	setFlagBoolBar(flags, &opt.silent, false, "silent", "s")
@@ -77,6 +84,12 @@ func parseOptions(args []string) (*option, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	exitCode, err := strconv.Atoi(rawExitCode)
+	if err != nil {
+		return nil, fmt.Errorf("cannot to recognize exit code: %s", rawExitCode)
+	}
+	opt.exitCode = exitCode
 
 	if len(rawIgnoreSignals) > 0 {
 		split := strings.Split(rawIgnoreSignals, ",")
