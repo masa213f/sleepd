@@ -20,7 +20,7 @@ Options:
       Ignored signals. It should be a comma-separated list of signal numbers.
 
   -log-interval [NUMBER], -interval [NUMBER]
-      Period of the log output. Specifies an integer greater than 1. The unit is seconds. (default: 1 second)
+      Period of the log output. Specifies an integer greater than 1. The unit is seconds. (default: 10 seconds)
 
   -show-signal, -S
       When used with -silent, -s, it makes sleepd show an message if it catches signal.
@@ -67,7 +67,7 @@ func parseOptions(args []string) (*option, error) {
 
 	var flags = flag.NewFlagSet("", flag.ContinueOnError)
 	setFlagStringBar(flags, &rawIgnoreSignals, "", "ignore-signals", "i")
-	setFlagStringBar(flags, &rawLogInterval, "1", "log-interval", "interval")
+	setFlagStringBar(flags, &rawLogInterval, "10", "log-interval", "interval")
 	setFlagBoolBar(flags, &opt.silent, false, "silent", "s")
 	setFlagBoolBar(flags, &opt.showSignal, false, "show-signal", "S")
 	setFlagBoolBar(flags, &opt.showVersion, false, "version", "v")

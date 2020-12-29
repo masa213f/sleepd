@@ -9,7 +9,7 @@ So it has some useful features for testing.
 
 - Logging
 
-    For ease of checking operation, sleepd outputs logs to `stdout` periodically (default: every second).
+    For ease of checking operation, sleepd outputs logs to `stdout` periodically (default: every 10 seconds).
     Events from the outside (e.g. signals) are also output to the log.
 
 - Signal handling
