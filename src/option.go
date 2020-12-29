@@ -19,6 +19,9 @@ Options:
   -ignore-signals, -i
       Ignored signals. It should be a comma-separated list of signal numbers.
 
+  -log-interval [NUMBER], -interval [NUMBER]
+      Period of the log output. Specifies an integer greater than 1. The unit is seconds. (default: 1 second)
+
   -show-signal, -S
       When used with -silent, -s, it makes sleepd show an message if it catches signal.
 
@@ -38,6 +41,7 @@ GitHub repository URL: https://github.com/masa213f/sleepd
 type option struct {
 	waitTime      int
 	ignoreSignals []int
+	logInterval   int
 	silent        bool
 	showSignal    bool
 	showVersion   bool
@@ -59,9 +63,11 @@ func setFlagStringBar(flags *flag.FlagSet, p *string, defaultValue string, name 
 func parseOptions(args []string) (*option, error) {
 	opt := new(option)
 	var rawIgnoreSignals string
+	var rawLogInterval string
 
 	var flags = flag.NewFlagSet("", flag.ContinueOnError)
 	setFlagStringBar(flags, &rawIgnoreSignals, "", "ignore-signals", "i")
+	setFlagStringBar(flags, &rawLogInterval, "1", "log-interval", "interval")
 	setFlagBoolBar(flags, &opt.silent, false, "silent", "s")
 	setFlagBoolBar(flags, &opt.showSignal, false, "show-signal", "S")
 	setFlagBoolBar(flags, &opt.showVersion, false, "version", "v")
@@ -83,6 +89,15 @@ func parseOptions(args []string) (*option, error) {
 		}
 		sort.Ints(opt.ignoreSignals)
 	}
+
+	interval, err := strconv.Atoi(rawLogInterval)
+	if err != nil {
+		return nil, fmt.Errorf("cannot to recognize log interval: %s", rawLogInterval)
+	}
+	if interval <= 0 {
+		return nil, fmt.Errorf("invalid log interval: %d", interval)
+	}
+	opt.logInterval = interval
 
 	if flags.NArg() > 1 {
 		return nil, fmt.Errorf("too many args: %s", strings.Join(flags.Args(), ", "))

@@ -60,7 +60,7 @@ func main() {
 		timer.Stop()
 	}
 
-	ticker := time.NewTicker(time.Second)
+	ticker := time.NewTicker(time.Duration(opt.logInterval) * time.Second)
 	if opt.silent {
 		ticker.Stop()
 	}
