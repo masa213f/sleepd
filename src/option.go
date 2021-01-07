@@ -53,13 +53,13 @@ type option struct {
 	showHelp      bool
 }
 
-func setFlagBoolBar(flags *flag.FlagSet, p *bool, defaultValue bool, name ...string) {
+func setFlagBoolVar(flags *flag.FlagSet, p *bool, defaultValue bool, name ...string) {
 	for _, n := range name {
 		flags.BoolVar(p, n, defaultValue, "")
 	}
 }
 
-func setFlagStringBar(flags *flag.FlagSet, p *string, defaultValue string, name ...string) {
+func setFlagStringVar(flags *flag.FlagSet, p *string, defaultValue string, name ...string) {
 	for _, n := range name {
 		flags.StringVar(p, n, defaultValue, "")
 	}
@@ -72,13 +72,13 @@ func parseOptions(args []string) (*option, error) {
 	var rawLogInterval string
 
 	var flags = flag.NewFlagSet("", flag.ContinueOnError)
-	setFlagStringBar(flags, &rawExitCode, "0", "exit-code", "e")
-	setFlagStringBar(flags, &rawIgnoreSignals, "", "ignore-signals", "i")
-	setFlagStringBar(flags, &rawLogInterval, "10", "log-interval", "interval")
-	setFlagBoolBar(flags, &opt.silent, false, "silent", "s")
-	setFlagBoolBar(flags, &opt.showSignal, false, "show-signal", "S")
-	setFlagBoolBar(flags, &opt.showVersion, false, "version", "v")
-	setFlagBoolBar(flags, &opt.showHelp, false, "help", "h")
+	setFlagStringVar(flags, &rawExitCode, "0", "exit-code", "e")
+	setFlagStringVar(flags, &rawIgnoreSignals, "", "ignore-signals", "i")
+	setFlagStringVar(flags, &rawLogInterval, "10", "log-interval", "interval")
+	setFlagBoolVar(flags, &opt.silent, false, "silent", "s")
+	setFlagBoolVar(flags, &opt.showSignal, false, "show-signal", "S")
+	setFlagBoolVar(flags, &opt.showVersion, false, "version", "v")
+	setFlagBoolVar(flags, &opt.showHelp, false, "help", "h")
 
 	err := flags.Parse(args)
 	if err != nil {
